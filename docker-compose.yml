@@ -1,0 +1,34 @@
+version: "2"
+services:
+  db:
+    image: mariadb
+    volumes_from:
+      - data
+    ports:
+      - "8082:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: changeme
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8081:80"
+    links:
+      - db
+
+  wp:
+    image: wordpress
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    links:
+      - db:mysql
+    environment:
+      WORDPRESS_DB_PASSWORD: changeme
+
+  data:
+    image: mariadb
+    volumes:
+      - /var/lib/mysql
+    command: "true"
